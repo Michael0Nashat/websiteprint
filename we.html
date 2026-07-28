@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مطبعتي | طابعات، ماكينات تصوير، أحبار وورق طباعة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --paper-2:#EFEAE0;
+    --ink:#17181A;
+    --cyan:#00AEEF;
+    --magenta:#E31C79;
+    --yellow:#FFC800;
+    --gray:#7D7871;
+    --line: rgba(23,24,26,0.14);
+    --radius: 4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Tajawal', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- registration marks (signature element) ---------- */
+  .regmark{
+    width:22px; height:22px; position:relative; flex-shrink:0;
+  }
+  .regmark::before, .regmark::after{
+    content:""; position:absolute; background:var(--ink);
+  }
+  .regmark::before{ width:100%; height:1.5px; top:50%; transform:translateY(-50%);}
+  .regmark::after{ height:100%; width:1.5px; left:50%; transform:translateX(-50%);}
+  .regmark-circle{
+    position:absolute; inset:3px; border:1.5px solid var(--ink); border-radius:50%;
+  }
+
+  .cmyk-strip{
+    display:flex; height:10px; width:100%;
+  }
+  .cmyk-strip span{flex:1;}
+  .cmyk-strip .c{background:var(--cyan);}
+  .cmyk-strip .m{background:var(--magenta);}
+  .cmyk-strip .y{background:var(--yellow);}
+  .cmyk-strip .k{background:var(--ink);}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    background:var(--ink); color:var(--paper);
+    font-size:13px; padding:8px 5%;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:6px;
+  }
+  .topbar .mono{opacity:0.85;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 5%;
+  }
+  .logo{
+    display:flex; align-items:center; gap:12px;
+    font-weight:900; font-size:22px;
+  }
+  .logo-badge{
+    width:38px;height:38px; border:2px solid var(--ink); border-radius:50%;
+    position:relative; flex-shrink:0;
+  }
+  .logo-badge::before, .logo-badge::after{content:""; position:absolute; background:var(--ink);}
+  .logo-badge::before{width:70%; height:1.5px; top:50%; left:15%; transform:translateY(-50%);}
+  .logo-badge::after{height:70%; width:1.5px; left:50%; top:15%; transform:translateX(-50%);}
+  .logo span{color:var(--magenta);}
+  nav.links{display:flex; gap:28px; font-weight:500; font-size:15px;}
+  nav.links a{position:relative; padding:4px 0; transition:color .2s;}
+  nav.links a:hover{color:var(--magenta);}
+  .cta-btn{
+    background:var(--ink); color:var(--paper);
+    padding:11px 22px; font-weight:700; font-size:14px;
+    border-radius:var(--radius); display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, background .2s;
+  }
+  .cta-btn:hover{background:var(--magenta); transform:translateY(-2px);}
+  .burger{display:none; flex-direction:column; gap:5px; cursor:pointer;}
+  .burger span{width:24px; height:2px; background:var(--ink);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    padding:70px 5% 50px;
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap:40px; align-items:center;
+    max-width:1400px; margin:0 auto;
+  }
+  .hero .eyebrow{
+    display:flex; align-items:center; gap:10px; margin-bottom:20px;
+    font-size:13px; letter-spacing:0.12em;
+  }
+  .hero h1{
+    font-size:clamp(34px, 5vw, 58px);
+    font-weight:900; line-height:1.15; margin-bottom:22px;
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--magenta);
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+    text-decoration-thickness: 6px;
+    text-underline-offset: 6px;
+  }
+  .hero p.lead{
+    font-size:17px; color:#3d3b38; max-width:480px; margin-bottom:30px;
+  }
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-outline{
+    border:1.5px solid var(--ink); padding:11px 22px; border-radius:var(--radius);
+    font-weight:700; font-size:14px; transition:.2s;
+  }
+  .btn-outline:hover{background:var(--ink); color:var(--paper);}
+
+  .hero-art{
+    position:relative; aspect-ratio:1/1; border:1.5px solid var(--line);
+    background:var(--paper-2); border-radius:8px; overflow:hidden;
+  }
+  .hero-art .corner{position:absolute; width:26px; height:26px;}
+  .hero-art .corner::before, .hero-art .corner::after{content:""; position:absolute; background:var(--ink);}
+  .corner.tl{top:14px; left:14px;} .corner.tr{top:14px; right:14px;}
+  .corner.bl{bottom:14px; left:14px;} .corner.br{bottom:14px; right:14px;}
+  .corner::before{width:100%; height:1.5px; top:0;} .corner::after{height:100%; width:1.5px; left:0;}
+  .hero-art img{position:absolute; inset:18px; width:calc(100% - 36px); height:calc(100% - 36px); object-fit:cover; border-radius:4px;}
+  .hero-art .tag{
+    position:absolute; bottom:20px; right:20px; background:var(--paper);
+    border:1px solid var(--line); padding:6px 12px; font-size:12px; border-radius:20px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--cyan);}
+
+  section{max-width:1400px; margin:0 auto; padding:70px 5%;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; flex-wrap:wrap; gap:16px;
+  }
+  .section-head .tagline{
+    display:flex; align-items:center; gap:10px; font-size:13px; color:var(--gray); margin-bottom:8px;
+  }
+  .section-head h2{font-size:clamp(26px,3.4vw,38px); font-weight:900;}
+  .section-head p{color:var(--gray); max-width:420px; font-size:14px;}
+
+  /* ---------- categories ---------- */
+  .cat-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
+  }
+  .cat-card{
+    background:var(--paper); border:1.5px solid var(--line); border-radius:8px;
+    padding:24px; position:relative; overflow:hidden; cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s;
+    display:flex; flex-direction:column; gap:14px; min-height:210px;
+  }
+  .cat-card:hover{transform:translateY(-6px); border-color:var(--ink); box-shadow:0 14px 30px rgba(23,24,26,0.1);}
+  .cat-card .num{font-size:12px; color:var(--gray);}
+  .cat-icon{
+    width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:24px; color:var(--paper);
+  }
+  .cat-card h3{font-size:18px; font-weight:700; margin-bottom:2px;}
+  .cat-card p{font-size:13px; color:var(--gray);}
+  .cat-card .arrow{margin-top:auto; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px;}
+  .cat-card:nth-child(1) .cat-icon{background:var(--cyan);}
+  .cat-card:nth-child(2) .cat-icon{background:var(--magenta);}
+  .cat-card:nth-child(3) .cat-icon{background:var(--ink);}
+  .cat-card:nth-child(4) .cat-icon{background:#d99b00;}
+  .cat-card:nth-child(5) .cat-icon{background:var(--magenta);}
+  .cat-card:nth-child(6) .cat-icon{background:var(--cyan);}
+  .cat-card:nth-child(7) .cat-icon{background:var(--gray);}
+  .cat-card:nth-child(8) .cat-icon{background:var(--ink);}
+
+  /* ---------- products ---------- */
+  .filter-row{
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;
+  }
+  .filter-chip{
+    border:1.5px solid var(--line); padding:9px 18px; border-radius:20px; font-size:13px;
+    font-weight:500; cursor:pointer; transition:.2s; background:var(--paper);
+  }
+  .filter-chip.active, .filter-chip:hover{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+
+  .prod-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:20px;}
+  .prod-card{
+    background:var(--paper); border:1.5px solid var(--line); border-radius:8px; overflow:hidden;
+    transition:box-shadow .25s ease, transform .25s ease;
+  }
+  .prod-card:hover{box-shadow:0 16px 34px rgba(23,24,26,0.12); transform:translateY(-4px);}
+  .prod-img{
+    aspect-ratio:4/3; background:var(--paper-2); position:relative; overflow:hidden;
+    border-bottom:1.5px solid var(--line);
+  }
+  .prod-img img{width:100%; height:100%; object-fit:cover;}
+  .prod-badge{
+    position:absolute; top:10px; right:10px; background:var(--yellow); color:var(--ink);
+    font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;
+  }
+  .prod-body{padding:16px 16px 18px;}
+  .prod-cat{font-size:11px; color:var(--gray); margin-bottom:6px;}
+  .prod-body h4{font-size:15px; font-weight:700; margin-bottom:8px; min-height:40px;}
+  .prod-meta{display:flex; justify-content:space-between; align-items:center; margin-top:12px;}
+  .price{font-size:17px; font-weight:900;}
+  .price .old{font-size:12px; color:var(--gray); text-decoration:line-through; font-weight:400; margin-inline-start:6px;}
+  .add-btn{
+    width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--paper);
+    display:flex; align-items:center; justify-content:center; font-size:18px; transition:.2s;
+  }
+  .add-btn:hover{background:var(--magenta);}
+  a.prod-card{display:block;}
+
+  /* ---------- why us / strip ---------- */
+  .strip-section{background:var(--ink); color:var(--paper); padding:0;}
+  .strip-inner{max-width:1400px; margin:0 auto; padding:60px 5%; display:grid; grid-template-columns:repeat(4,1fr); gap:30px;}
+  .strip-item{display:flex; flex-direction:column; gap:10px;}
+  .strip-item .ic{width:40px; height:40px; border:1.5px solid var(--paper); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;}
+  .strip-item h4{font-size:16px; font-weight:700;}
+  .strip-item p{font-size:13px; color:#bdbab5;}
+
+  /* ---------- brands ---------- */
+  .brand-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; opacity:0.75;}
+  .brand-row span{font-weight:900; font-size:20px; letter-spacing:0.02em;}
+
+  /* ---------- CTA banner ---------- */
+  .banner{
+    background:var(--paper-2); border:1.5px solid var(--line); border-radius:10px;
+    padding:50px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;
+    position:relative; overflow:hidden;
+  }
+  .banner h3{font-size:clamp(22px,3vw,30px); font-weight:900; max-width:520px;}
+  .banner p{color:var(--gray); margin-top:8px; font-size:14px;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink); color:var(--paper);}
+  .foot-top{max-width:1400px; margin:0 auto; padding:60px 5% 30px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:30px;}
+  .foot-col h5{font-size:14px; margin-bottom:16px; color:#d8d5cf;}
+  .foot-col a, .foot-col p{font-size:13.5px; color:#9c988f; display:block; margin-bottom:10px; line-height:2;}
+  .foot-col a:hover{color:var(--paper);}
+  .foot-logo{font-weight:900; font-size:22px; margin-bottom:14px;}
+  .foot-logo span{color:var(--magenta);}
+  .foot-bottom{
+    border-top:1px solid rgba(255,255,255,0.12); padding:20px 5%;
+    display:flex; justify-content:space-between; font-size:12.5px; color:#8a867d;
+    max-width:1400px; margin:0 auto; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width: 1000px){
+    .hero{grid-template-columns:1fr;}
+    .hero-art{max-width:480px; margin:0 auto;}
+    .cat-grid{grid-template-columns:repeat(2,1fr);}
+    .prod-grid{grid-template-columns:repeat(2,1fr);}
+    .strip-inner{grid-template-columns:repeat(2,1fr);}
+    nav.links{display:none;}
+    .burger{display:flex;}
+    .foot-top{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .cat-grid{grid-template-columns:1fr;}
+    .prod-grid{grid-template-columns:1fr;}
+    .strip-inner{grid-template-columns:1fr;}
+    .foot-top{grid-template-columns:1fr;}
+    .banner{padding:30px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cmyk-strip"><span class="c"></span><span class="m"></span><span class="y"></span><span class="k"></span></div>
+
+<div class="topbar">
+  <span class="mono">توصيل لكل محافظات مصر · ضمان استعادة حتى ٣ سنوات</span>
+  <span class="mono">اتصل الآن: 01000000000</span>
+</div>
+
+<header>
+  <div class="nav">
+    <div class="logo"><div class="logo-badge"></div>مطبع<span>تي</span></div>
+    <nav class="links">
+      <a href="#products">المنتجات</a>
+      <a href="#why">ليه تختارنا</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+    <a href="#contact" class="cta-btn">اطلب الآن ←</a>
+    <div class="burger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">
+      <div class="regmark"><div class="regmark-circle"></div></div>
+    </div>
+    <h1>كل حاجة للطباعة والتصوير... <em>في مكان واحد</em></h1>
+    <p class="lead">طابعات، ماكينات تصوير مالتي فانكشن، أحبار أصلية وبديلة، ورق جلوسي، وماكينات طباعة ديجيتال — بأسعار المصنع وضمان حقيقي.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-outline">اطلب عرض سعر</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+    <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=700&q=80" alt="طابعة مكتبية">
+    <div class="tag"><span class="dot"></span> جاهز للتوصيل خلال 24 ساعة</div>
+  </div>
+</div>
+
+<section id="products">
+  <div class="section-head">
+    <div>
+      <div class="tagline"><div class="regmark" style="width:14px;height:14px;"></div> المنتجات</div>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <div class="filter-chip active">الكل</div>
+    <div class="filter-chip">طابعات كمبيوتر</div>
+    <div class="filter-chip">طابعات مالتي فانكشن</div>
+    <div class="filter-chip">مكن تصوير</div>
+    <div class="filter-chip">احبار طابعات</div>
+    <div class="filter-chip">احبار مكن تصوير</div>
+    <div class="filter-chip">ورق جلوسي</div>
+    <div class="filter-chip">مكن طباعة ديجيتال</div>
+    <div class="filter-chip">مكن طباعة انكجيت</div>
+  </div>
+
+  <div class="prod-grid">
+    <a class="prod-card" href="product.html?id=1">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=500&q=80" alt="طابعة ليزر"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">طابعات كمبيوتر</div>
+        <h4>طابعة ليزر أبيض وأسود سريعة</h4>
+        <div class="prod-meta"><div class="price">2,450 ج.م<span class="old">2,900</span></div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=2">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1585789575086-4c2eabcd9d31?w=500&q=80" alt="طابعة مالتي فانكشن"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">مالتي فانكشن</div>
+        <h4>مالتي فانكشن ليزر ألوان + سكانر + فاكس</h4>
+        <div class="prod-meta"><div class="price">6,800 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=3">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&q=80" alt="مكينة تصوير"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">مكن تصوير</div>
+        <h4>ماكينة تصوير مكتبية A3/A4</h4>
+        <div class="prod-meta"><div class="price">14,200 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=4">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1612810806695-30f7a8258391?w=500&q=80" alt="طابعة انكجيت"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">إنكجيت</div>
+        <h4>طابعة إنكجيت ألوان لطباعة الصور</h4>
+        <div class="prod-meta"><div class="price">3,300 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=5">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=500&q=80" alt="حبر طابعة"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">أحبار طابعات</div>
+        <h4>طقم أحبار إنكجيت أصلي 4 ألوان</h4>
+        <div class="prod-meta"><div class="price">650 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=6">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=500&q=80" alt="تونر"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">أحبار مكن تصوير</div>
+        <h4>تونر أسود بديل لمكن التصوير</h4>
+        <div class="prod-meta"><div class="price">480 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=7">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=500&q=80" alt="ورق جلوسي"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">ورق جلوسي</div>
+        <h4>ورق جلوسي A4 230 جرام (100 ورقة)</h4>
+        <div class="prod-meta"><div class="price">220 ج.م</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+
+    <a class="prod-card" href="product.html?id=8">
+      <div class="prod-img"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=80" alt="ماكينة ديجيتال"></div>
+      <div class="prod-body">
+        <div class="prod-cat mono">طباعة ديجيتال</div>
+        <h4>ماكينة طباعة ديجيتال إنتاج بكميات كبيرة</h4>
+        <div class="prod-meta"><div class="price">تواصل للسعر</div><div class="add-btn" onclick="event.preventDefault();event.stopPropagation();">+</div></div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="why" class="strip-section">
+  <div class="strip-inner">
+    <div class="strip-item"><div class="ic">✓</div><h4>ضمان أصلي</h4><p>كل المنتجات بضمان الوكيل أو الموزع المعتمد.</p></div>
+    <div class="strip-item"><div class="ic">🚚</div><h4>توصيل سريع</h4><p>شحن لجميع المحافظات خلال 24-72 ساعة.</p></div>
+    <div class="strip-item"><div class="ic">🛠️</div><h4>صيانة ودعم فني</h4><p>فريق صيانة متخصص للطابعات والمكن بعد البيع.</p></div>
+    <div class="strip-item"><div class="ic">💳</div><h4>دفع مرن</h4><p>كاش، تحويل بنكي، أو تقسيط على الشركات.</p></div>
+  </div>
+</section>
+
+<section id="brands">
+  <div class="section-head"><div><h2 style="font-size:20px;">الماركات المتاحة</h2></div></div>
+  <div class="brand-row">
+    <span>HP</span><span>Canon</span><span>Epson</span><span>Brother</span><span>Xerox</span><span>Ricoh</span>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="banner">
+    <div>
+      <h3>محتاج عرض سعر لكمية أو تعاقد شركات؟</h3>
+      <p>ابعتلنا تفاصيل طلبك على واتساب وهنرد عليك بعرض سعر خلال ساعة.</p>
+    </div>
+    <a href="#" class="cta-btn">تواصل عبر واتساب ←</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-top">
+    <div class="foot-col">
+      <div class="foot-logo">مطبع<span>تي</span></div>
+      <p>وجهتك لكل احتياجات الطباعة والتصوير: طابعات، مكن تصوير، أحبار، وورق طباعة بأفضل الأسعار وضمان حقيقي.</p>
+    </div>
+    <div class="foot-col">
+      <h5>الأقسام</h5>
+      <a href="#products">طابعات كمبيوتر</a>
+      <a href="#products">طابعات مالتي فانكشن</a>
+      <a href="#products">مكن تصوير</a>
+      <a href="#products">احبار طابعات</a>
+      <a href="#products">احبار مكن تصوير</a>
+      <a href="#products">ورق جلوسي</a>
+      <a href="#products">مكن طباعة ديجيتال</a>
+      <a href="#products">مكن طباعة انكجيت</a>
+    </div>
+    <div class="foot-col">
+      <h5>الشركة</h5>
+      <a href="#why">ليه تختارنا</a>
+      <a href="#products">المنتجات</a>
+      <a href="#contact">تواصل معنا</a>
+    </div>
+    <div class="foot-col">
+      <h5>تواصل</h5>
+      <p class="mono">01000000000</p>
+      <p class="mono">info@matbaaty.com</p>
+      <p>أسيوط</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 مطبعتي. جميع الحقوق محفوظة.</span>
+    <span class="mono">CMYK · PRINT · REPEAT</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

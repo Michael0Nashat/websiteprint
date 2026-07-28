@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل المنتج | مطبعتي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --paper-2:#EFEAE0;
+    --ink:#17181A;
+    --cyan:#00AEEF;
+    --magenta:#E31C79;
+    --yellow:#FFC800;
+    --gray:#7D7871;
+    --line: rgba(23,24,26,0.14);
+    --radius: 4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Tajawal', sans-serif;
+    line-height:1.6;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    background:var(--ink); color:var(--paper);
+    font-size:13px; padding:8px 5%;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:6px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 5%;
+  }
+  .logo{
+    display:flex; align-items:center; gap:12px;
+    font-weight:900; font-size:22px;
+  }
+  .logo-badge{
+    width:38px;height:38px; border:2px solid var(--ink); border-radius:50%;
+    position:relative; flex-shrink:0;
+  }
+  .logo-badge::before,.logo-badge::after{content:""; position:absolute; background:var(--ink);}
+  .logo-badge::before{width:70%; height:1.5px; top:50%; left:15%; transform:translateY(-50%);}
+  .logo-badge::after{height:70%; width:1.5px; left:50%; top:15%; transform:translateX(-50%);}
+  .logo span{color:var(--magenta);}
+  nav.links{display:flex; gap:28px; font-weight:500; font-size:15px;}
+  nav.links a{position:relative; padding:4px 0; transition:color .2s;}
+  nav.links a:hover{color:var(--magenta);}
+  .back-btn{
+    background:var(--ink); color:var(--paper);
+    padding:10px 20px; font-weight:700; font-size:14px;
+    border-radius:var(--radius); display:flex; align-items:center; gap:8px;
+  }
+  .back-btn:hover{background:var(--magenta);}
+  .burger{display:none; flex-direction:column; gap:5px; cursor:pointer;}
+  .burger span{width:24px; height:2px; background:var(--ink);}
+
+  /* ---------- product details ---------- */
+  .product-page{
+    max-width:1400px; margin:0 auto; padding:60px 5% 80px;
+  }
+  .product-breadcrumb{
+    font-size:14px; color:var(--gray); margin-bottom:24px;
+  }
+  .product-breadcrumb a:hover{color:var(--ink);}
+  .product-breadcrumb span{margin:0 8px; opacity:0.5;}
+
+  .prod-detail-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:50px;
+    background:var(--paper); padding:40px; border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  }
+  .prod-image{
+    aspect-ratio:4/3; background:var(--paper-2); border-radius:8px; overflow:hidden;
+    border:1px solid var(--line); position:relative;
+  }
+  .prod-image img{width:100%; height:100%; object-fit:cover;}
+  .prod-info h1{
+    font-size:clamp(26px,3.5vw,42px); font-weight:900; margin-bottom:12px; line-height:1.2;
+  }
+  .prod-cat{
+    display:inline-block; font-size:12px; font-family:'IBM Plex Mono', monospace;
+    background:var(--paper-2); padding:6px 12px; border-radius:20px; color:var(--gray); margin-bottom:16px;
+  }
+  .prod-price{
+    font-size:clamp(22px,2.5vw,34px); font-weight:900; color:var(--ink); margin-bottom:20px;
+  }
+  .prod-price .old{
+    font-size:16px; color:var(--gray); text-decoration:line-through; font-weight:400; margin-right:10px;
+  }
+  .prod-desc{
+    color:var(--gray); line-height:1.8; margin-bottom:24px; font-size:15px;
+  }
+  .prod-features{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:30px;
+  }
+  .feature-item{
+    background:var(--paper-2); padding:12px 16px; border-radius:6px; font-size:13px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .feature-item::before{content:"✓"; color:var(--cyan); font-weight:700;}
+  .buy-actions{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--ink); color:var(--paper); padding:14px 32px; font-weight:700; font-size:15px;
+    border-radius:var(--radius); border:none; cursor:pointer; transition:.2s; display:flex; align-items:center; gap:10px;
+  }
+  .btn-primary:hover{background:var(--magenta); transform:translateY(-2px); box-shadow:0 6px 18px rgba(227,28,121,0.3);}
+  .btn-secondary{
+    background:var(--paper); color:var(--ink); border:2px solid var(--line); padding:14px 32px; font-weight:700; font-size:15px;
+    border-radius:var(--radius); cursor:pointer; transition:.2s;
+  }
+  .btn-secondary:hover{border-color:var(--ink); background:var(--paper-2);}
+  .rating{
+    display:flex; align-items:center; gap:8px; margin-bottom:16px;
+  }
+  .stars{color:var(--yellow); font-size:16px;}
+  .rating span{font-size:13px; color:var(--gray);}
+  .stock-status{
+    display:flex; align-items:center; gap:8px; margin-top:20px; padding-top:20px; border-top:1px solid var(--line);
+  }
+  .stock-ok{color:var(--cyan); font-weight:700; font-size:14px;}
+  .stock-not{color:var(--magenta); font-weight:700; font-size:14px;}
+
+  /* ---------- related products ---------- */
+  .related-section{margin-top:80px;}
+  .section-head{margin-bottom:30px;}
+  .section-head h2{font-size:28px; font-weight:900;}
+  .related-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .related-card{background:var(--paper); border:1px solid var(--line); border-radius:8px; overflow:hidden; transition:.2s;}
+  .related-card:hover{transform:translateY(-4px); box-shadow:0 10px 24px rgba(0,0,0,0.08);}
+  .related-img{aspect-ratio:4/3; background:var(--paper-2); overflow:hidden;}
+  .related-img img{width:100%; height:100%; object-fit:cover;}
+  .related-body{padding:14px;}
+  .related-cat{font-size:11px; color:var(--gray); margin-bottom:4px;}
+  .related-title{font-size:14px; font-weight:600; margin-bottom:8px; min-height:36px;}
+  .related-price{font-weight:700; font-size:15px; color:var(--ink);}
+  .related-price .old{font-size:12px; color:var(--gray); text-decoration:line-through; font-weight:400; margin-right:6px;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink); color:var(--paper); padding:40px 5%; text-align:center;}
+  .foot-logo{font-weight:900; font-size:22px; margin-bottom:10px;}
+  .foot-logo span{color:var(--magenta);}
+  .foot-text{color:#9c988f; font-size:13.5px; margin-top:10px;}
+
+  @media (max-width:900px){
+    .prod-detail-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:700px){
+    .related-grid{grid-template-columns:repeat(2,1fr);}
+    nav.links{display:none;}
+    .burger{display:flex;}
+  }
+  @media (max-width:500px){
+    .related-grid{grid-template-columns:1fr;}
+    .buy-actions{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="mono">توصيل لكل محافظات مصر · ضمان استعادة حتى ٣ سنوات</span>
+  <span class="mono">اتصل الآن: 01000000000</span>
+</div>
+
+<header>
+  <div class="nav">
+    <div class="logo"><div class="logo-badge"></div>مطبع<span>تي</span></div>
+    <nav class="links">
+      <a href="we.html#products">المنتجات</a>
+      <a href="we.html#why">ليه تختارنا</a>
+      <a href="we.html#contact">تواصل معنا</a>
+    </nav>
+    <a href="we.html" class="back-btn">← عودة للرئيسية</a>
+    <div class="burger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<div class="product-page">
+  <nav class="product-breadcrumb">
+    <a href="we.html">الرئيسية</a>
+    <span>/</span>
+    <a href="we.html#products">المنتجات</a>
+    <span>/</span>
+    <span id="product-breadcrumb-name">اسم المنتج</span>
+  </nav>
+
+  <div class="prod-detail-grid">
+    <div class="prod-image">
+      <img id="product-image" src="" alt="منتج">
+    </div>
+    <div class="prod-info">
+      <div id="product-category" class="prod-cat">فئة المنتج</div>
+      <h1 id="product-title">اسم المنتج</h1>
+      
+      <div class="rating">
+        <div class="stars">★★★★★</div>
+        <span id="product-rating-text">(١٢٨ تقييم)</span>
+      </div>
+      
+      <div id="product-price" class="prod-price">السعر</div>
+      
+      <p id="product-desc" class="prod-desc">
+        وصف المنتج هنا.
+      </p>
+      
+      <div class="prod-features">
+        <div class="feature-item">ضمان الوكيل المعتمد</div>
+        <div class="feature-item">توصيل سريع</div>
+        <div class="feature-item">دعم فني متخصص</div>
+        <div class="feature-item">دفع عند الاستلام</div>
+      </div>
+      
+      <div class="buy-actions">
+        <button class="btn-primary" onclick="addToCart()">
+          ← أضف للسلة
+        </button>
+        <button class="btn-secondary" onclick="contactWhatsApp()">
+          تواصل عبر واتساب
+        </button>
+      </div>
+      
+      <div class="stock-status">
+        <span id="stock-status" class="stock-ok">✓ متوفر حالياً</span>
+        <span style="margin-right:12px;">|</span>
+        <span>توصيل مؤكد خلال ٢٤ ساعة</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="related-section">
+  <div class="section-head">
+    <h2>منتجات قد تعجبك</h2>
+  </div>
+  <div class="related-grid" id="related-products">
+    <!-- Related products will be inserted here -->
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">مطبع<span>تي</span></div>
+  <p class="foot-text">وجهتك لكل احتياجات الطباعة والتصوير</p>
+</footer>
+
+<script>
+  // بيانات المنتجات الحقيقية
+  const products = {
+    1: {
+      id: 1,
+      title: 'طابعة HP LaserJet Pro MFP M148fdw',
+      category: 'طابعات كمبيوتر',
+      price: 24500,
+      oldPrice: 29999,
+      image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=600&q=80',
+      description: 'طابعة ليزر مكتبية احترافية من HP. تطبع وتسند وتفاكس في نفس الجهاز. سرعة طباعة تصل إلى ٢٨ صفحة في الدقيقة، مع ضمان وكيل معتمد لمدة ٣ سنوات.',
+      specs: ['سرعة: ٢٨ صفحة/دقيقة', 'اتصال: Wi-Fi، Bluetooth', 'شاشة: ٢.٧ بوصة', 'ضمان: ٣ سنوات']
+    },
+    2: {
+      id: 2,
+      title: 'طابعة Canon imageRUNNER 2206',
+      category: 'طابعات كمبيوتر',
+      price: 18500,
+      oldPrice: 22000,
+      image: 'https://images.unsplash.com/photo-1585789575086-4c2eabcd9d31?w=600&q=80',
+      description: 'طابعة ليزر احترافية من Canon بجودة طباعة ممتازة. مناسبة للمكاتب الصغيرة. سرعة عالية وضمان وكيل معتمد.',
+      specs: ['سرعة: ٢٠ صفحة/دقيقة', 'شاشة: LCD ٢.٧ بوصة', 'اتصال: USB، Ethernet', 'ضمان: ٣ سنوات']
+    },
+    3: {
+      id: 3,
+      title: 'طابعة Epson L3251 Wi-Fi',
+      category: 'طابعات كمبيوتر',
+      price: 7500,
+      oldPrice: 9500,
+      image: 'https://images.unsplash.com/photo-1612810806695-30f7a8258391?w=600&q=80',
+      description: 'طابعة إينكجيت متعددة الوظائف من Epson مع حامل أحبار خارجي. طباعة عالية الجودة وبأقل تكلفة للصفحة.',
+      specs: ['شاشة: LCD', 'اتصال: USB، Wi-Fi', 'ضمان: ٣ سنوات', 'سعة الأحبار: ٧٠ مل']
+    },
+    4: {
+      id: 4,
+      title: 'طابعة Brother HL-L2350DW',
+      category: 'طابعات كمبيوتر',
+      price: 9200,
+      oldPrice: 11500,
+      image: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=600&q=80',
+      description: 'طابعة ليزر سريعة من Brother مع دعم طباعة Wi-Fi مباشرة. مثالية للمكاتب المنزلية والصغيرة.',
+      specs: ['سرعة: ٣٠ صفحة/دقيقة', 'شاشة: LCD', 'ضمان: ٣ سنوات', 'سعة الورق: ٢٥٠ ورقة']
+    },
+    5: {
+      id: 5,
+      title: 'مالتي فانكشن HP Color LaserJet MFP 133w',
+      category: 'مالتي فانكشن',
+      price: 6800,
+      oldPrice: 8900,
+      image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&q=80',
+      description: 'طابعة مالتي فانكشن ليزر ألوان HP. تطبع ومسند ومسح ضوئي في جهاز واحد. مثالية لطباعة المطويات والمطابع الصغيرة.',
+      specs: ['طباعة ألوان', 'سرعة: ١٩ صفحة/دقيقة', 'شاشة: ٢.٧ بوصة', 'ضمان: ٣ سنوات']
+    },
+    6: {
+      id: 6,
+      title: 'طابعة مالتي فانكشن Canon PIXMA TR8550',
+      category: 'مالتي فانكشن',
+      price: 4200,
+      oldPrice: 5500,
+      image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80',
+      description: 'طابعة مالتي فانكشن إنكجيت ألوان من Canon بجودة طباعة فائقة. مناسبة للمنزل والمكتب.',
+      specs: ['طباعة ألوان', 'سرعة: ١٠ ص/دقيقة (أسود)، ٨ ص/دقيقة (ألوان)', 'شاشة: ٢.٤ بوصة', 'ضمان: سنة واحدة']
+    },
+    7: {
+      id: 7,
+      title: 'ماكينة تصوير Ricoh MP 2555 A3',
+      category: 'مكن تصوير',
+      price: 142000,
+      oldPrice: 175000,
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80',
+      description: 'ماكينة تصوير Ricoh احترافية A3 مع ربط أوتوماتيكي. سعة عالية للورق وسرعة طباعة مذهلة. مناسبة للمدارس والدورات.',
+      specs: ['سرعة: ٢٥ صفحة/دقيقة', 'سعة الورق: ١١٠ ورقة', 'شاشة: ٧ بوصة', 'ضمان: ٣ سنوات']
+    },
+    8: {
+      id: 8,
+      title: 'ماكينة تصوير Xerox VersaLink C405',
+      category: 'مكن تصوير',
+      price: 185000,
+      oldPrice: 220000,
+      image: 'https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=600&q=80',
+      description: 'ماكينة تصوير احترافية Xerox بألوان عالية الجودة. تصلح للدورات التدريبية والمدارس والمعاهد.',
+      specs: ['سرعة: ٤٠ صفحة/دقيقة', 'طباعة ألوان', 'شاشة: ٧ بوصة', 'ضمان: ٣ سنوات']
+    },
+    9: {
+      id: 9,
+      title: 'طقم أحبار HP 305 أصلي 4 ألوان',
+      category: 'أحبار طابعات',
+      price: 650,
+      oldPrice: 850,
+      image: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=600&q=80',
+      description: 'طقم أحبار أصلي HP 305 للطابعات إنكجيت. يحتوي على ٤ أحبار (سيان، ماجنتا، أصف��، أسود) بسعة عالية.',
+      specs: ['أصلي 100%', 'سعة عالية', 'ضمان أصلي', 'عدد الصفحات: ٣٠٠ صفحة لكل لون']
+    },
+    10: {
+      id: 10,
+      title: 'حبر Toner HP 12A (C412A) أسود أصلي',
+      category: 'أحبار مكن تصوير',
+      price: 480,
+      oldPrice: 650,
+      image: 'https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=600&q=80',
+      description: 'تونر أسود أصلي HP 12A لطباعة ليزر. سعة عالية تصل لـ ٢٠٠٠ صفحة. متوافق مع طابعات HP LaserJet.',
+      specs: ['أصلي 100%', 'سعة: ٢٠٠٠ صفحة', 'ضمان أصلي', 'متوافق مع: HP LaserJet']
+    },
+    11: {
+      id: 11,
+      title: 'ورق جلوسي A4 230 جرام - عبوة ١٠٠ ورقة',
+      category: 'ورق جلوسي',
+      price: 220,
+      oldPrice: 280,
+      image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&q=80',
+      description: 'ورق جلوسي عالي الجودة ٢٣٠ جرام/متر مربع. مناسب لطباعة الصور والمطويات والمطابع. عبوة تحتوي على ١٠٠ ورقة.',
+      specs: ['وزن: ٢٣٠ جرام/متر مربع', 'حجم: A4', 'عدد الأوراق: ١٠٠', 'خالي من الأحماض']
+    },
+    12: {
+      id: 12,
+      title: 'ورق جلوسي A3 230 جرام - عبوة ٥٠ ورقة',
+      category: 'ورق جلوسي',
+      price: 380,
+      oldPrice: 480,
+      image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&q=80',
+      description: 'ورق جلوسي A3 عالي الجودة لطباعة الصور وال-plots. مناسب للمكتبات الفنية والدورات الفنية.',
+      specs: ['وزن: ٢٣٠ جرام/متر مربع', 'حجم: A3', 'عدد الأوراق: ٥٠', 'خالي من الأحماض']
+    }
+  };
+
+  // استرجاع معرف المنتج من URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = parseInt(urlParams.get('id')) || 1;
+  const product = products[productId];
+
+  // تحديث عناصر الصفحة
+  if (product) {
+    document.getElementById('product-title').textContent = product.title;
+    document.getElementById('product-category').textContent = product.category;
+    document.getElementById('product-breadcrumb-name').textContent = product.title;
+    document.getElementById('product-image').src = product.image;
+    
+    // توليد وصف من المواصفات
+    const specsHtml = product.specs ? product.specs.map(s => `<div style="margin:6px 0; color:var(--gray); font-size:14px;">• ${s}</div>`).join('') : '';
+    document.getElementById('product-desc').innerHTML = `${product.description}<br><br><strong>المواصفات:</strong><br>${specsHtml}`;
+    
+    const priceHtml = product.oldPrice 
+      ? `<span class="old">${product.oldPrice.toLocaleString()} ج.م</span>${product.price.toLocaleString()} ج.م`
+      : `${product.price.toLocaleString()} ج.م`;
+    document.getElementById('product-price').innerHTML = priceHtml;
+    
+    // تحديث عدد التقييمات بناءً على المنتج
+    const ratingCount = [128, 89, 256, 67, 112, 94, 45, 78, 203, 156, 89, 67][productId - 1] || 128;
+    document.getElementById('product-rating-text').textContent = `(${ratingCount.toLocaleString()} تقييم)`;
+
+    // إضافة منتجات متعلقة (4 منتجات عشوائية مختلفة)
+    const relatedProducts = Object.values(products).filter(p => p.id !== productId).slice(0, 4);
+    const relatedContainer = document.getElementById('related-products');
+    
+    if (relatedProducts.length > 0) {
+      relatedProducts.forEach(p => {
+        const priceHtml = p.oldPrice 
+          ? `<span class="old">${p.oldPrice.toLocaleString()} ج.م</span>${p.price.toLocaleString()} ج.م`
+          : `${p.price.toLocaleString()} ج.م`;
+        
+        relatedContainer.innerHTML += `
+          <a href="product.html?id=${p.id}" class="related-card">
+            <div class="related-img">
+              <img src="${p.image}" alt="${p.title}">
+            </div>
+            <div class="related-body">
+              <div class="related-cat mono">${p.category}</div>
+              <div class="related-title">${p.title}</div>
+              <div class="related-price">${priceHtml}</div>
+            </div>
+          </a>
+        `;
+      });
+    } else {
+      relatedContainer.innerHTML = '<p style="color:var(--gray); text-align:center; grid-column:1/-1;">لا توجد منتجات مشابهة حالياً</p>';
+    }
+  }
+
+  function addToCart() {
+    alert(`تم إضافة المنتج:\n${product.title}\nالسعر: ${product.price.toLocaleString()} ج.م\n\nتم إضافته بنجاح للسلة!`);
+  }
+
+  function contactWhatsApp() {
+    const phone = '01000000000';
+    const message = `مرحباً، أرغب في معرفة تفاصيل عن المنتج: ${product.title} (ID: ${product.id})`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+  }
+</script>
+
+</body>
+</html>
